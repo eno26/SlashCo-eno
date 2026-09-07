@@ -1,0 +1,7 @@
+"Teeth"
+{
+	"$basetexture" "models/slashco/slashers/garry/tongue10"
+	"$model" 1
+	"$clientshader" "MouthShader"
+	"$halflambert" 1
+}

@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/slashco/slashers/garry/gman_sheet10"
+	"$halflambert" 1
+	"$bumpmap" "models/slashco/slashers/garry/gman_sheet_normal10"
+
+	// Original shader: VertexLitTexture
+	"$phong" "1"
+	"$phongboost" "4"
+	"$phongexponent" "10"
+	"$phongexponenttexture" "models/slashco/slashers/garry/gman_sheet_phong10"
+	"$phongalbedotint" "1"										
+	"$phongfresnelranges"	"[.01 .4 1]"
+}

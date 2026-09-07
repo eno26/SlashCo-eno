@@ -1,0 +1,6 @@
+"eyes"
+{
+	"$basetexture" "models/slashco/slashers/garry/eyeball_r10"
+	"$iris" "models/slashco/slashers/garry/pupil_r10"
+	"$halflambert" 1
+}

@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTexture
+	"$basetexture" "models/slashco/slashers/garry/gman_facehirez10"
+	"$bumpmap" "models/slashco/slashers/garry/gmanhirez_normal10"
+	"$halflambert" 1
+
+	// Original shader: VertexLitTexture
+	"$phong" "1"
+	"$phongboost" "8"
+	"$phongexponent" "10"
+	"$phongexponenttexture" "models/slashco/slashers/garry/gmanface_phong10"
+	"$phongalbedotint" "1"										
+	"$phongfresnelranges"	"[.01 .4 1]"
+}
+
