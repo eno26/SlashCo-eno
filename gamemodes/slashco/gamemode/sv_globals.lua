@@ -3,27 +3,19 @@ SlashCo = SlashCo or {}
 SlashCo.CurConfig = {}
 
 function GetRandomMap(ply_count)
-	local keys = table.GetKeys(SCInfo.Maps)
-	if #keys == 0 then -- if we have no maps, we return early as else we enter a infinite loop that would crash the game.
-		return "error"
-	end
-
-	local tries = #keys * 4
-	for k=1, tries do -- This formerly was a repeat until loop, that loved to crash the game.
-		local rand = math.random(1, #keys)
-		local rand_name = keys[rand]
-		if rand_name ~= "error" and SCInfo.Maps[rand_name].MIN_PLAYERS <= (ply_count + (SCInfo.MinimumMapPlayers - 1)) then
-			return rand_name
+	local fittingMaps = {}
+	for name, map in pairs(SCInfo.Maps) do
+		if name ~= "error" and map.MIN_PLAYERS <= (ply_count + (SCInfo.MinimumMapPlayers - 1)) then
+			table.insert(fittingMaps, name)
 		end
 	end
 
-	--[[local key, val = next( SCInfo.Maps )
-	if val then
-		return val
-	end]]
+	if #fittingMaps == 0 then
+		print("[SlashCo] No map fits " .. ply_count .. " players, this should usualy never happen.")
+		return "error"
+	end
 
-	print("[SlashCo] Ran out of tries to select map to stop a game crash, this should usualy never happen.")
-	return "error"
+	return fittingMaps[math.random(#fittingMaps)]
 end
 
 function SlashCo.ResetLobbyData()
@@ -328,10 +320,30 @@ function SlashCo.EnableSoundScapes()
 	end
 end
 
-function SlashCo.ChangeMap(mapname)
-	if g_SlashCoDebug then return end -- Don't change map when debugging
+function SlashCo.DebugPrint(msg, ...)
+	local host = nil
+	for _, ply in player.Iterator() do
+		if ply:IsListenServerHost() then
+			host = ply
+			break
+		end
+	end
 
-	RunConsoleCommand("changelevel", mapname)
+	if host then
+		print("[SlashCo - Debug] " .. msg, ...)
+	else
+		print("[SlashCo - Debug] " .. msg, ...)
+	end
+end
+
+function SlashCo.ChangeMap(mapName)
+	GameData.ChangeMap = mapName
+	if g_SlashCoDebug then -- Don't change map when debugging
+		SlashCo.DebugPrint("Run slashco_debug_changemap to proceed with map change onto \"" .. mapName .. "\"")
+		return
+	end
+
+	RunConsoleCommand("changelevel", mapName)
 end
 
 function SlashCo.GoToLobby()
@@ -435,7 +447,7 @@ function SlashCo.HelicopterLand(pos)
 		SlashCo.SendObjectives()
 
 		-- Helicopter arrived effect
-		hook.Run("SlashCo:HelicopterArrived")
+		hook.Run("SlashCo:HelicopterLanded")
 	end)
 
 	--Will the Helicopter Abandon players?
@@ -487,7 +499,6 @@ function SlashCo.HelicopterLeaveForIntro()
 	end
 
 	local delay = math.sqrt(heli:GetPos():Distance(SlashCo.CurRound.HelicopterSpawnPosition)) / 5
-
 	timer.Simple(delay, function()
 		if not IsValid(heli) then
 			return
@@ -497,9 +508,66 @@ function SlashCo.HelicopterLeaveForIntro()
 		timer.Simple(0.05, function()
 			SlashCo.QuietHeli()
 			SlashCo.RemoveHelicopter()
+		end)
+	end)
+end
 
-			net.Start("SlashCo:MapAmbientPlay")
-			net.Broadcast()
+local function fadeInSurvivors()
+	for _, ply in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
+		ply:ScreenFade(bit.bor(SCREENFADE.IN, SCREENFADE.PURGE), color_black, 2, 0)
+	end
+end
+
+local function finishHelicopterIntro(heli)
+	SlashCo.EnableSoundScapes()
+	if not IsValid(heli) then return end
+
+	heli:DumpSurvivors()
+
+	timer.Simple(4, function()
+		if not IsValid(heli) then return end
+
+		heli.LockHeading = nil
+		SlashCo.HelicopterTakeOffIntro()
+	end)
+end
+
+local INTRO_BLACK_TIME = 3
+function SlashCo.HelicopterLandIntro()
+	local landPos = SlashCo.CurRound.HelicopterIntroPosition
+	local startPos = landPos + Vector(0, 0, 800)
+	local survivors = team.GetPlayers(TEAM_SURVIVOR)
+
+	for _, ply in ipairs(survivors) do
+		ply:ScreenFade(SCREENFADE.OUT, color_black, 0.1, INTRO_BLACK_TIME + 1)
+	end
+	timer.Simple(INTRO_BLACK_TIME, fadeInSurvivors)
+
+	SlashCo.UpdateHelicopterSeek(startPos)
+	local heli = SlashCo.CreateHelicopter(startPos, SlashCo.CurRound.HelicopterIntroAngle)
+	if not IsValid(heli) then
+		finishHelicopterIntro()
+		return
+	end
+
+	heli.LockHeading = true
+	for i, ply in ipairs(survivors) do
+		heli:SeatPlayer(ply, i)
+	end
+
+	timer.Simple(0.2, function() -- After the helicopter reset its own seek position
+		if IsValid(heli) then
+			SlashCo.UpdateHelicopterSeek(landPos)
+		end
+	end)
+
+	local timeout = CurTime() + 25
+	timer.Create("SlashCo:HelicopterIntroLanding", 0.25, 0, function()
+		if IsValid(heli) and CurTime() < timeout and heli:GetPos()[3] - landPos[3] > 25 then return end
+
+		timer.Remove("SlashCo:HelicopterIntroLanding")
+		timer.Simple(1.5, function()
+			finishHelicopterIntro(heli)
 		end)
 	end)
 end

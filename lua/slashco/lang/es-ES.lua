@@ -100,7 +100,7 @@ SlashCo.LangTable["Drainage"] = "Drenaje"
 SlashCo.LangTable["Drainage_desc"] = "Encontraras más Gasolina,\nPero\nlos Generadores perderán Gasolina lentamente."
 
 SlashCo.LangTable["Duality"] = "Dualidad"
-SlashCo.LangTable["Duality_desc"] = "Solo necesitaras prender un generador,\nPero\nApareceran dos Slashers."
+SlashCo.LangTable["Duality_desc"] = "Apareceran dos Slashers."
 
 SlashCo.LangTable["Singularity"] = "Singularidad"
 SlashCo.LangTable["Singularity_desc"] = "Encontraras más Gasolina,\nPero\nEl Slasher sera más poderoso."
@@ -199,7 +199,7 @@ SlashCo.LangTable["PocketSand"] = "Arena de Bolsillo"
 SlashCo.LangTable["PocketSand_desc"] = "Siega a Slashers que están a rango cercano."
 
 SlashCo.LangTable["Rock"] = "La Roca"
-SlashCo.LangTable["Rock_desc"] = "Te hace completamente silencioso, pero no puedes correr. Cuando dejada caer, se empujara hacia la Gasolina má​​​​​​​s cercana ocasionalmente."
+SlashCo.LangTable["Rock_desc"] = "Te hace completamente silencioso, pero tu velocidad al correr es menor. Cuando dejada caer, se empujara hacia la Gasolina má​​​​​​​s cercana ocasionalmente."
 
 SlashCo.LangTable["Soda"] = "Soda D-Saparece"
 SlashCo.LangTable["Soda_desc"] = "Te hace invisible cuando usada."
@@ -242,6 +242,9 @@ SlashCo.LangTable["Burger_desc"] = "Una hamburguesa creada por un payaso lunatic
 
 SlashCo.LangTable["CocaCola"] = "Refresco de Cola"
 SlashCo.LangTable["CocaCola_desc"] = "Pedimos granadas y esto fue lo que nos dieron. Ten cuidado al usarla."
+
+SlashCo.LangTable["Merlton"] = "MERLT0N"
+SlashCo.LangTable["Merlton_desc"] = "Quieres enfretarte a los slashers? No busques mas que MERLT0N! Patrullara el area alrededor, cualquier slasher cercano sera perseguido y paralizado por 10 segundos."
 
 --GameInfo
 
@@ -611,6 +614,53 @@ SlashCo.LangTable["Hoovydundy_tip"] = "-No intentes frenarlo."
 SlashCo.LangTable["genblock"] = "bloquear generador"
 SlashCo.LangTable["entangle"] = "amarrar"
 
+--Postal Dude
+SlashCo.LangTable["PostalDude"] = "Postal Dude"
+SlashCo.LangTable["PostalDude_desc"] = [[Un slasher tactico enfocado en un amplio y versatil rango de combate.
+
+-La paciencia de Postal Dude decrese durante una persecución, reduciendo la velocidad
+-Tiene un arsenal de armas apto para cada situacion.
+-Este slasher puede agarrar gasolinas y verterlas en el suelo.]]
+SlashCo.LangTable["PostalDude_tip"] = "-Postal Dude siempre buscara emboscarte, presta atencion al entorno!"
+
+SlashCo.LangTable["patience"] = "paciencia"
+SlashCo.LangTable["shovel"] = "pala"
+SlashCo.LangTable["deagle"] = "deagle"
+SlashCo.LangTable["m4"] = "m4"
+SlashCo.LangTable["kick"] = "patada"
+SlashCo.LangTable["shovel bash"] = "palazo"
+SlashCo.LangTable["pour"] = "verter"
+SlashCo.LangTable["ignite"] = "encender"
+SlashCo.LangTable["deagle ammo"] = "municion deagle"
+SlashCo.LangTable["m4 ammo"] = "municion m4"
+
+-- AMERICAN PO
+SlashCo.LangTable["Americanpo"] = "Po Americano"
+SlashCo.LangTable["Americanpo_desc"] = [[Este tirador esta obsesionado con su patriotismo.
+
+-Po puede cambiar de estado dependiendo de su situacion.
+-Su arma es buena a corta distancia.
+-Puede quemar a los supervivientes marcados con sus balas.]]
+SlashCo.LangTable["Americanpo_tip"] = "-No te dejes golpear por la botella."
+
+SlashCo.LangTable["throw bottle"] = "lanzar botella"
+SlashCo.LangTable["switch mode"] = "cambiar modo"
+SlashCo.LangTable["MODE: HUNTER"] = "MODO: CAZADOR"
+SlashCo.LangTable["MODE: AGGRESSIVE"] = "MODO: AGRESIVO"
+
+SlashCo.LangTable["Hotdogman"] = "Hombre-hotdog"
+SlashCo.LangTable["Hotdogman_desc"] = [[A este slasher le gustan mucho los hotdogs.
+
+-Hombre-hotdog solo puede embestir durante una persecución.
+-Puede vomitar los hotdogs consumidos para ralentizar supervivientes.
+-Este slasher corre mas rapido de lo que parece]]
+SlashCo.LangTable["Hotdogman_tip"] = "-Evita su vomito a toda costa."
+
+SlashCo.LangTable["find hotdog"] = "busca hotdog"
+SlashCo.LangTable["eat hotdog"] = "comer hotdog"
+SlashCo.LangTable["vomit"] = "vomitar"
+SlashCo.LangTable["nausea"] = "nauseas"
+
 --misc from maptools
 SlashCo.LangTable["spectators_can_ping"] = "Los espectadores ahora pueden marcar."
 SlashCo.LangTable["unhide"] = "levantarse" -- for dolphinman to unhide
@@ -743,6 +793,15 @@ SlashCo.LangTable["Watcher_docDescAdd"] = [[Este Slasher no puede ganar pasivame
 SlashCo.LangTable["Hoovydundy_docDesc"] = [[Lo que comenzo como simples rumores al parecer resulto ser cierto. Un equipo de slashco fue enviado a hacer su rutina diaria, pero se toparon con EL. Solo uno de los empleados sobrevivio para contarnos su experiencia ante la entidad.]]
 SlashCo.LangTable["Hoovydundy_docDescAdd"] = [[Este slasher es lento y siempre emitira una luz roja alrededor suyo, siendo facil de localizar. Puede agarrar a sus victimas con cuerdas provenientes de su cuerpo. Es capaz de interferir con la restauracion de los generadores. Se recomienda no tratar de aturdir este slasher de NINGUNA MANERA.]]
 
+SlashCo.LangTable["PostalDude_docDesc"] = [[Tras abandonar Edensin y toparse con otra ciudad, The Dude se encontró de nuevo necesitado de dinero. Aprendiendo de sus experiencias pasadas, pronto encontró una empresa que, al ver su talento, le ofreció un puesto como elemento disuasorio natural para sus empleados {muy importantes y totalmente indispensables}. Quizás te preguntes: "¿Por qué harían algo así? ¿No sería contraproducente?". Y tendrías razón, si SlashCo no extorsionara al gobierno aumentando artificialmente el nivel de amenaza. El negocio va viento en popa, como se suele decir.]]
+SlashCo.LangTable["PostalDude_docDescAdd"] = [[Este slasher se vuelve más fuerte cuanto más progreso de generador, obteniendo nuevas habilidades y agotando su paciencia más rápido. La paciencia se agota fuera de persecución, haciéndolo más rápido y viceversa; entra automáticamente en persecución al infligir daño y aumenta su medidor de paciencia al infligir dicho daño. La pala es una herramienta cuerpo a cuerpo multiusos, la Deagle es buena a distancias más largas y la M4 destrozará tu HP de cerca, pero resulta ineficaz a distancias más largas debido a su retroceso. The Dude puede recoger bidones de gasolina y verterlos en el suelo para encenderlos con fósforos. Puedes patear para infligir daño y abrir puertas a la fuerza; en su último modo de furia desesperada, esto las romperá directamente.]]
+
+SlashCo.LangTable["Americanpo_docDesc"] = [[Una entidad sumamente patriota y orgullosa de su pais, adopta la forma de un adulto comun y corriente con un disfraz infantil de segunda mano de 'Po'. Lo mas llamativo de su apariencia es el cinturon cargado de botellas y su inseparable escopeta. Este slasher, a pesar de tener la apariencia de un humano normal, es conocido por no ser del todo humano, y cabe mencionar que ya se enfrento al equipo de EXTERMINADORES antes de su registro.]]
+SlashCo.LangTable["Americanpo_docDescAdd"] = [[Este slasher suele tener la fuerza y resistencia de un adulto promedio, pero aun puede sentir dolor. Generalmente ataca a sus victimas 'antipatriotas' con su escopeta, alternando entre su habilidad de CAZA y otros ataques. Si se siente inutil, intentara bloquearte el paso o golpearte desde lejos con una de sus botellas. A pesar de tener un arma poderosa, puedes aturdirlo para mantenerlo fuera de combate por un tiempo; solo asegurate de no estar frente a el.]]
+
+SlashCo.LangTable["Hotdogman_docDesc"] = [[Este demonio tiene la apariencia de un adulto grande cuya cabeza es reemplazada por un pan]]
+SlashCo.LangTable["Hotdogman_docDescAdd"] = [[Este slasher es lento pero puede causar gran daño facilmente. Los Hotdogs le permiten vomitar.]]
+
 -- Perks
 
 SlashCo.LangTable["perk_nameui"] = "NOMBRE: \""
@@ -768,6 +827,15 @@ SlashCo.LangTable["perk_healthy_desc"] = "Items consumibles curan un 50% mas.\nT
 
 SlashCo.LangTable["perk_adrenalinerush"] = "Subidon de Adrenalina"
 SlashCo.LangTable["perk_adrenalinerush_desc"] = "Cuando el helicoptero aterriza, recibes un poco de curacion y una mejora temporal de velocidad."
+
+SlashCo.LangTable["perk_extremely_buff"] = "Fuerza Extrema"
+SlashCo.LangTable["perk_extremely_buff_desc"] = "Cargar objetos pesados no sera nada para ti.\nTodo el daño que recibas aumenta un 50%."
+
+SlashCo.LangTable["perk_balkan_warrior"] = "Guerrero Balkan"
+SlashCo.LangTable["perk_balkan_warrior_desc"] = "El post-efecto de Balkan Boost ya no te perjudica.\nLa velocidad al insertar gasolinas de Balkan Boost es reducida."
+
+SlashCo.LangTable["perk_glutton"] = "Gloton"
+SlashCo.LangTable["perk_glutton_desc"] = "Todos los efectos de consumibles duran un 50% mas.\nLos consumibles curan un 50% menos."
 
 -- Keyboard UI
 

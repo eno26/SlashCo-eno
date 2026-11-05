@@ -41,14 +41,14 @@ function PANEL:Init()
 	left:Dock(LEFT)
 	--]]
 
-	self.SlasherName = GameData.LocalPlayer:GetNWString("Slasher", "none")
+	self.SlasherName = GameData.LocalPlayer:GetNW2String("Slasher", "none")
 	timer.Create("SlashCo_ResetSlasherHud", 1, 0, function()
 		if not IsValid(self) then
 			timer.Remove("SlashCo_ResetSlasherHud")
 			return
 		end
 
-		if GameData.LocalPlayer:GetNWString("Slasher", "none") ~= self.SlasherName then
+		if GameData.LocalPlayer:GetNW2String("Slasher", "none") ~= self.SlasherName then
 			SlashCo.InitSlasherHud()
 		end
 	end)
@@ -91,6 +91,23 @@ function PANEL:AddMeter(name, max, component, componentIsPrefix, showMax, zPos)
 	meter:DockMargin(0, 0, 8, 8)
 	meter:Setup(name, max, component, componentIsPrefix, showMax)
 	self.Right:InvalidateChildren()
+end
+
+---removes a meter
+function PANEL:RemoveMeter(name)
+	if not self.Meters[name] then return end
+
+	self.Meters[name]:Remove()
+	self.Meters[name] = nil
+end
+
+---removes all meters
+function PANEL:RemoveMeters()
+	for _, meter in pairs(self.Meters) do
+		meter:Remove()
+	end
+
+	self.Meters = {}
 end
 
 ---sets the value of a meter
@@ -221,6 +238,17 @@ function PANEL:RemoveControl(key)
 
 	self.Controls[key]:Remove()
 	self.Controls[key] = nil
+	self.ControlTies[key] = nil
+end
+
+---removes all controlls
+function PANEL:RemoveControls()
+	for _, control in pairs(self.Controls) do
+		control:Remove()
+	end
+
+	self.Controls = {}
+	self.ControlTies = {}
 end
 
 ---sets a control's text
@@ -336,13 +364,13 @@ function PANEL:TieControlVisible(key, netvar, isInverse, doShake, fallback)
 	local state = true
 	if type(netvar) == "table" then
 		for _, v in ipairs(netvar) do
-			if not GameData.LocalPlayer:GetNWBool(v, fallback) then
+			if not SlashCo.GetNetworkVar(GameData.LocalPlayer, v, fallback, "Bool") then
 				state = false
 				break
 			end
 		end
 	else
-		state = GameData.LocalPlayer:GetNWBool(netvar, fallback)
+		state = SlashCo.GetNetworkVar(GameData.LocalPlayer, netvar, fallback, "Bool")
 	end
 
 	self.ControlTies[key] = {
@@ -618,7 +646,7 @@ function PANEL:CheckNetVars(isOr, invertInput, ...)
 
 	local result = isOr
 	for _, v in pairs({ ... }) do
-		if GameData.LocalPlayer:GetNWBool(v, invertInput) ~= invertInput then
+		if SlashCo.GetNetworkVar(GameData.LocalPlayer, v, invertInput, "Bool") ~= invertInput then
 			result = not result
 			break
 		end
@@ -960,13 +988,13 @@ function PANEL:Think()
 		local val = true
 		if type(v.netvar) == "table" then
 			for _, v1 in ipairs(v.netvar) do
-				if GameData.LocalPlayer:GetNWBool(v1, v.fallback) then
+				if SlashCo.GetNetworkVar(GameData.LocalPlayer, v1, v.fallback, "Bool") then
 					val = false
 					break
 				end
 			end
 		else
-			val = GameData.LocalPlayer:GetNWBool(v.netvar, v.fallback)
+			val = SlashCo.GetNetworkVar(GameData.LocalPlayer, v.netvar, v.fallback, "Bool")
 		end
 
 		if val ~= v.prevVal then

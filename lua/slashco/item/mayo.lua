@@ -2,18 +2,14 @@ local ITEM = {}
 
 ITEM.Model = "models/props_lab/jar01a.mdl"
 ITEM.EntClass = "sc_mayo"
-ITEM.Name = "Mayo"
+ITEM.Name = "Mayonnaise"
 ITEM.Icon = "slashco/ui/icons/items/item_5"
-ITEM.Price = 15
+ITEM.Price = 40
 ITEM.Description = "Mayo_desc"
 ITEM.CamPos = Vector(50,0,20)
 ITEM.IsSpawnable = true
 
-function ITEM.OnUse(ply)
-	--While the item is stored, a survivor can press R to consume it. It will set their health to 200, regardless of current health.
-
-	ply:SetHealth( 200 )
-
+function ITEM.OnUsePredicted(ply)
 	SlashCo.AudioSystem.PlaySound({
 		soundPath = "slashco/survivor/eat_mayo.mp3",
 		identifier = "MayoUse",
@@ -22,7 +18,28 @@ function ITEM.OnUse(ply)
 		entity = ply,
 		volume = 1,
 		fadeIn = 0,
+		excludeSendTo = ply,
 	})
+end
+
+function ITEM.OnUse(ply)
+	ITEM.OnUsePredicted(ply)
+
+	--While the item is stored, a survivor can press R to consume it. It will set their health to 200, regardless of current health.
+	local maxHealth = ply:GetMaxHealth()
+	local healAmount = 100
+
+	if SlashCo.GetFoodHealMultiplier then
+		healAmount = healAmount * SlashCo.GetFoodHealMultiplier(ply)
+	end
+
+	if SlashCo.IsActivePerk(ply, "Glutton") then
+		ply:SetHealth(math.min(ply:Health() + healAmount, maxHealth))
+		return
+	else
+		ply:SetHealth( 200 )
+		return
+	end
 end
 
 ITEM.ViewModel = {

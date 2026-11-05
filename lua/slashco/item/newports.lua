@@ -1,14 +1,14 @@
 local ITEM = {}
 
 ITEM.Model = "models/slashco/newports.mdl"
-ITEM.Name = "Newport Menthols"
+ITEM.Name = "Newports"
 ITEM.EntClass = "sc_newports"
 ITEM.Price = 40
 ITEM.Description = "Newports_desc"
 ITEM.CamPos = Vector(150, 0, 0)
 ITEM.IsSpawnable = true
 
-function ITEM.OnUse(ply) -- Unlike in SlashCo VR, this item will decrease the fog.
+function ITEM.OnUsePredicted(ply)
 	SlashCo.AudioSystem.PlaySound({
 		soundPath = "slashco/newports_eat.ogg",
 		identifier = "NewportsEat",
@@ -17,8 +17,13 @@ function ITEM.OnUse(ply) -- Unlike in SlashCo VR, this item will decrease the fo
 		entity = ply,
 		volume = 0.8,
 		fadeIn = 0,
+		excludeSendTo = ply,
 	})
-	
+end
+
+function ITEM.OnUse(ply) -- Unlike in SlashCo VR, this item will decrease the fog.
+	ITEM.OnUsePredicted(ply)
+
 	SlashCo.AddFog({
 		name = "Newports",
 		multiplier = 3,
@@ -27,7 +32,11 @@ function ITEM.OnUse(ply) -- Unlike in SlashCo VR, this item will decrease the fo
 		entity = ply,
 	})
 
-	timer.Simple(math.random(140, 200), function()
+	local duration = math.random(140, 200)
+
+	duration = SlashCo.GetConsumableEffectDuration(ply, duration)
+
+	timer.Simple(duration, function()
 		if not IsValid(ply) then return end
 
 		SlashCo.RemoveFog("Newports", ply)

@@ -7,6 +7,11 @@ ENT.ClassName = "sc_jonklercart"
 
 if CLIENT then return end
 
+local function IsChristmas()
+	local date = os.date("*t")
+	return date.month == 12 and date.day >= 24 and date.day <= 25
+end
+
 function ENT:EnableJonkler()
 	self:DropToFloor()
 	self:SetMoveType(MOVETYPE_NONE)
@@ -16,7 +21,7 @@ function ENT:EnableJonkler()
 	self.DeactivationTime = CurTime() + 200
 
 	SlashCo.AudioSystem.PlaySound({
-		soundPath = "slashco/jonk.ogg",
+		soundPath = IsChristmas() and "slashco/jolly_jonkler.ogg" or "slashco/jonk.ogg",
 		identifier = "JonklerCart",
 		minDistance = 500,
 		maxDistance = 1000,
@@ -53,6 +58,7 @@ function ENT:DestroyJonkler()
 	})
 
 	SlashCo.AudioSystem.StopSound("JonklerCart", 5, self)
+	self:Remove()
 end
 
 function ENT:Think()
@@ -64,9 +70,21 @@ function ENT:Think()
 
 	local pos = self:GetPos()
 	for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
-		if slasher:GetPos():Distance(pos) > 300 then continue end -- out of range
+		if slasher:GetPos():Distance(pos) > 200 then continue end -- out of range
 
 		self:DestroyJonkler()
 		break
+	end
+end
+
+if CLIENT then
+	function ENT:Think()
+		local pos = self:GetPos()
+		for _, slashers in ipairs(team.GetPlayers(TEAM_SLASHER)) do
+			if slashers:GetPos():Distance(pos) > 700 then continue end
+
+			local lookAngle = (pos - slashers:GetPos()):Angle()
+			slashers:SetEyeAngles(lookAngle)
+		end
 	end
 end

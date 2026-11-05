@@ -3,12 +3,28 @@ local ITEM = {}
 ITEM.Model = "models/slashco/jellocup.mdl"
 ITEM.Name = "JelloCup"
 ITEM.EntClass = "sc_jellocup"
-ITEM.Price = 80
+ITEM.Price = 70
 ITEM.Description = "JelloCup_desc"
 ITEM.CamPos = Vector(150, 0, 0)
 ITEM.IsSpawnable = true
+ITEM.UseEffect = "Resistance"
+
+function ITEM.OnUsePredicted(ply)
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = "slashco/survivor/eat_mayo.mp3",
+		identifier = "JelloUse",
+		minDistance = 400,
+		maxDistance = 600,
+		entity = ply,
+		volume = 1,
+		fadeIn = 0,
+		excludeSendTo = ply,
+	})
+end
 
 function ITEM.OnUse(ply)
+	ITEM.OnUsePredicted(ply)
+
 	-- RaphaelIT7: Yes, it's intentional that it can go over the max health! It's limited to 1.5x of the max health
 	local maxHealth = ply:GetMaxHealth()
 	local healAmount = maxHealth / 3
@@ -19,17 +35,7 @@ function ITEM.OnUse(ply)
 
 	ply:SetHealth(math.min(ply:Health() + healAmount, maxHealth * 1.5))
 
-	SlashCo.AudioSystem.PlaySound({
-		soundPath = "slashco/survivor/eat_mayo.mp3",
-		identifier = "JelloUse",
-		minDistance = 400,
-		maxDistance = 600,
-		entity = ply,
-		volume = 1,
-		fadeIn = 0,
-	})
-
-	ply:AddEffect("Resistance", math.random(20, 50))
+	ply:AddEffect(ITEM.UseEffect, SlashCo.GetConsumableEffectDuration(ply, math.random(20, 30)))
 end
 
 ITEM.ViewModel = {
