@@ -530,11 +530,11 @@ end, nil, "Print all battery spawns and their associated generators", FCVAR_CHEA
 -- ToDo: Verify that its accurate enouth to not be abused. Maybe add a distance limit
 concommand.Add("slashco_unstuck", function(ply, _, args)
 	if not ply:IsStuck() then
-		ply:ChatPrint("Your not stuck.")
+		ply:ChatPrint("You're not stuck.")
 		return
 	end
 
-	ply:ChatPrint("Look at a free spot and wait 3 seconds")
+	ply:ChatPrint("Look at a free spot and wait 3 seconds.")
 	timer.Simple(3, function()
 		if not IsValid(ply) then return end
 
@@ -559,7 +559,7 @@ timer.Create("SlashCo:CheckStuck", 5, 0, function()
 
 		ply._STUCKCOUNT = (ply._STUCKCOUNT or 0) + 1
 		if ply._STUCKCOUNT >= 3 then
-			ply:ChatPrint("If your stuck, run the \"slashco_unstuck\" console command and look at a free spot")
+			ply:ChatPrint("If you're stuck, run the \"slashco_unstuck\" console command and look at a free spot.")
 			ply._STUCKCOUNT = 0
 		end
 	end
