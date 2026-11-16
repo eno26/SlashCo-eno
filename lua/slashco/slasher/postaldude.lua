@@ -56,6 +56,7 @@ local POSTAL_BABY_EQUIPPED = 666
 -- Anger is already used for the Patience Meter, so we have to make a new function for the fuel meter
 local function PostalDudeFuelAmount(slasher)
 	return slasher:GetNW2Float("PostalDudeFuelAmount", 0)
+	
 end
 
 local function PostalDudeFuelControl(slasher, fuel)
@@ -120,6 +121,7 @@ function SLASHER.OnSpawn(slasher)
 	slasher.DeagleUnlocked = false
 	slasher.MGUnlocked = false
 
+	PostalDudeFuelControl(slasher, 30)
 	DeagleBulletsControl(slasher, 6)
 	MGBulletsControl(slasher, 20)
 
@@ -138,6 +140,7 @@ end
 function SLASHER.OnHelicopterSummon(slasher)
 	if slasher.PostalDudeStage ~= POSTAL_RAGE_STAGE then
 		slasher.PostalDudeStage = POSTAL_RAGE_STAGE
+		SLASHER.FuelRegen = 0.0075
 		DeagleBulletsControl(slasher, 3)
 		MGBulletsControl(slasher, 10)
 
@@ -356,8 +359,6 @@ function SLASHER.OnTickBehaviour(slasher)
 	-- patience stuff
 	local patience = SlashCo.GetSlasherAnger(slasher)
 	slasher:SetNW2Int("PostalDudePatience", math.floor(patience))
-
-	slasher:SetNW2Int("PostalDudeFuelAmount", math.floor(PostalDudeFuelAmount(slasher)))
 	slasher:SetNW2Int("DeagleBulletsAmount", math.floor(DeagleBulletsAmount(slasher)))
 	slasher:SetNW2Int("MGBulletsAmount", math.floor(MGBulletsAmount(slasher)))
 
