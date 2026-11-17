@@ -445,8 +445,10 @@ end
 -- Flips a table to have the given key as the actual key instead of the normal DB 1, 2, 3 stuff.
 function SlashCo.SQLTableToLuaTable(data, keyName)
 	local resultTable = {}
-	for _, tbl in ipairs(data) do
-		resultTable[tbl[keyName]] = tbl
+	if data then
+		for _, tbl in ipairs(data) do
+			resultTable[tbl[keyName]] = tbl
+		end
 	end
 
 	return resultTable
@@ -454,7 +456,7 @@ end
 
 ---Set up players for the round
 function SlashCo.SetupPlayers()
-	if not game.SinglePlayer() and ((cookie.GetString("slashco_table_basedata") == nil) or not sql.TableExists("slashco_table_survivordata") or not sql.TableExists("slashco_table_slasherdata")) then
+	if not SlashCo.IsDebugGame() and ((cookie.GetString("slashco_table_basedata") == nil) or not sql.TableExists("slashco_table_survivordata") or not sql.TableExists("slashco_table_slasherdata")) then
 		SlashCo.Abort("Missing SQL table data")
 		return
 	end
@@ -668,8 +670,8 @@ local function convertLegacyConfig(name, skip)
 			SlashCo.BaseCans = config.GasCans.Count
 		end
 
-		if isnumber(config.GasCans.NeededPerGenerator) then
-			SlashCo.GasCansPerGenerator(config.GasCans.NeededPerGenerator)
+		if isnumber(config.GasCans.NeededPerGenerator) and config.GasCans.NeededPerGenerator > 0 then
+			SlashCo.SetGasCansPerGenerator(config.GasCans.NeededPerGenerator)
 		end
 
 		if istable(config.GasCans.Spawnpoints) then
@@ -793,7 +795,6 @@ local function startRound(noSetup)
 
 	local survivors = team.GetPlayers(TEAM_SURVIVOR)
 	for _, ply in ipairs(survivors) do
-		ply:ScreenFade(SCREENFADE.IN, color_black, 1, 0)
 		ply:SetHealth(ply:GetMaxHealth())
 	end
 	GameData.RoundStartSurvivorCount = #survivors
@@ -811,15 +812,14 @@ local function startRound(noSetup)
 	SlashCo.SpawnItems()
 
 	SlashCo.SetHelicopterPositions()
-	SlashCo.UpdateHelicopterSeek(SlashCo.CurRound.HelicopterIntroPosition)
-	SlashCo.CreateHelicopter(SlashCo.CurRound.HelicopterTargetPosition, SlashCo.CurRound.HelicopterIntroAngle)
+	SlashCo.HelicopterLandIntro()
 	SlashCo.BroadcastCurrentRoundData(true)
 
 	local slashers = sql.Query("SELECT * FROM slashco_table_slasherdata;") or {}
 	local dangerLevel = SlashCo.DangerLevel.Unknown
 	for _, slasher in ipairs(SlashCo.CurRound.SlashersToBeSpawned) do
 		if not IsValid(slasher) then continue end
-		local slasherTbl = SlashCoSlashers[slasher:GetNWString("Slasher")]
+		local slasherTbl = SlashCoSlashers[slasher:GetNW2String("Slasher")]
 		if slasherTbl and ((slasherTbl.DangerLevel or 0) > dangerLevel) then
 			dangerLevel = slasherTbl.DangerLevel
 		end
@@ -833,9 +833,6 @@ local function startRound(noSetup)
 	})
 
 	timer.Simple(8, function()
-		SlashCo.HelicopterTakeOffIntro()
-		SlashCo.EnableSoundScapes()
-
 		if not g_SlashCoDebug then
 			SlashCo.ClearDatabase()
 		end --Everything was loaded, clear the database.
@@ -905,19 +902,21 @@ end
 
 -- RaphaelIT7: Finds a free spawn, if there is none, it'll just spawn them in each other.
 local function FindFreeSpawn(ply, entities)
-	local oldestSpawn = {}
+	local oldestSpawn, oldestTime
 	for _, spawnEnt in ipairs(entities) do
 		if hook.Run("IsSpawnpointSuitable", ply, spawnEnt, false) then
 			return spawnEnt
 		end
 
-		oldestSpawn[CurTime() - (spawnEnt.LastSpawnedEntity or 0)] = spawnEnt
+		local lastSpawned = spawnEnt.LastSpawnedEntity or 0
+		if not oldestTime or lastSpawned < oldestTime then
+			oldestSpawn = spawnEnt
+			oldestTime = lastSpawned
+		end
 	end
 
 	-- Just take the oldest one.
-	for _, spawnEnt in SortedPairs(oldestSpawn, true) do
-		return spawnEnt
-	end
+	return oldestSpawn
 end
 
 function SlashCo.FindSpawn(ply)
@@ -939,7 +938,7 @@ function SlashCo.FindSpawn(ply)
 			return
 		end
 
-		spawnEnt.SpawnedEntity = ply
+		UpdateSpawnEntity(ply, spawnEnt)
 		if spawnEnt.SpawnEnt then -- info_player_start doesn't have this.
 			spawnEnt:SpawnEnt()
 		end
@@ -948,7 +947,7 @@ function SlashCo.FindSpawn(ply)
 	end
 end
 
-function GM:PlayerSelectSpawn(ply, transiton)
+function GM:PlayerSelectSpawn(ply, transition)
 	if transition then
 		return
 	end
